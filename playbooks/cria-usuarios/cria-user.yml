@@ -1,0 +1,39 @@
+---
+- hosts: webservers
+  # become: true
+  #become_user: root
+  #gather_facts: false
+
+  become: yes
+  remote_user: vagrant
+  gather_facts: false
+
+  tasks:
+
+    - name: "Criando grupo SYSADMIN-LINUX"
+      group:
+        name: sysadmin-linux
+        state: present
+
+    - name: "Criando usuario AMACHADO e adicionando no grupo SYSADMIN-LINUX"
+      user:
+       name: amachado
+       comment: Administradores Linux
+       groups: sysadmin-linux
+       shell: /bin/bash
+       update_password: on_create
+       password: $6$546LM0hCy3J8niBZ$/sVYDnLRVxJ8ZBES2f7fE0zQnRs3t0d1VlgqmN189/aH/TrMxFz5aDVeK0BDhv5KAtDuNmZ6EUrit/wGGWqt.0
+      register: amachado
+
+    - name: Forcar usuario a trocar a senha
+      shell: chage -d 0 amachado
+      when: amachado.changed
+
+    - name: "Copiando arquivo sudoers"
+      copy:
+        src: /vagrant/configs/ansible/cria-usuarios/sudoers
+        dest: /etc/sudoers
+        owner: root
+        group: root
+        mode: 0440
+

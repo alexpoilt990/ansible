@@ -1,0 +1,17 @@
+[local]
+server130 ansible_connection=local 
+
+[web]
+server132
+
+[servidores]
+server131 #192.168.200.131
+server132 #192.168.200.132
+
+[servidores:vars]
+ansible_user=vagrant
+ansible_ssh_private_key_file=/home/vagrant/id_bionic
+##ansible_python_interpreter=/usr/bin/python3
+ansible_ssh_commom_args='-o StrictHostKeyChecking=no'
+ansible_become=true
+

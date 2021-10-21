@@ -1,0 +1,23 @@
+---
+- name: deploy ansible user
+  hosts: servidores
+  tasks:
+
+    - name: create user
+      user:
+        name: user10
+        comment: "conta user"
+        password: $6$546LM0hCy3J8niBZ$/sVYDnLRVxJ8ZBES2f7fE0zQnRs3t0d1VlgqmN189/aH/TrMxFz5aDVeK0BDhv5KAtDuNmZ6EUrit/wGGWqt.0
+
+    - name: Install SSH key
+      authorized_key:
+        user: user10
+        state: present
+        manage_dir: true
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+
+    - name: setup user10 sudo access
+      copy:
+        dest: /etc/sudoers.d/user10
+        content: 'user10 ALL=(ALL) NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s

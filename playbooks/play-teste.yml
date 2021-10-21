@@ -1,0 +1,4 @@
+- hosts: servidores
+  tasks:
+   - debug:
+      msg: Test of Ansible Playbook!
